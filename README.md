@@ -78,19 +78,23 @@ class MyHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // プロバイダからカウンターの状態を取得
-    final provider = ref.watch(counterStateNotifierProvider);
+    final counterState = ref.watch(counterStateNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Example with Freezed Riverpod'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('You have pushed the button this many times:'),
-            Text('${provider.value!.count}', style: Theme.of(context).textTheme.headline4),
-          ],
+        child: counterState.when(
+          data: (state) => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('You have pushed the button this many times:'),
+              Text( '${state.count}', style: Theme.of(context).textTheme.headline4),
+            ],
+          ),
+          loading: () => CircularProgressIndicator(),
+          error: (error, stack) => Text('Something went wrong: $error'),
         ),
       ),
       floatingActionButton: Column(
